@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+  - yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - docker
+    - docker-python
+  - systemd:
+      name: docker
+      enabled: yes
+      state: started
+  - docker_image:
+      name: bkimminich/juice-shop
+      state: present
+  - docker_container:
+      name: loose
+      image: bkimminich/juice-shop
+      ports:
+      - 8080:3000
+      detach: true
+      state: started
